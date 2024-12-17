@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <div>
-        Project started
+        <>Project started</>
         </div>
     </>
   )
