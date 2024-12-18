@@ -1,9 +1,5 @@
 import axios from "axios";
 
-const NEWS_API_KEY = "9fa0825f28c04cbf8705a0793c1a8c0a";
-
-const NEWS_DATA_API_KEY = "pub_6260247100c546187bd0eaf0407c796014b21";
-
 export const fetchNewsAPI = async () => {
   const res = await axios.get(
     `https://newsapi.org/v2/everything?q=Apple&apiKey=${NEWS_API_KEY}`

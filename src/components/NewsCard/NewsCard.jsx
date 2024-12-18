@@ -6,7 +6,7 @@ const NewsCard = ({ title, image, description, url }) => {
         <div className="card-body">
           <h5 className="card-title">{title.slice(0,50)}</h5>
           <p className="card-text">{description?description.slice(0, 90):"The firm discouraged injured workers from seeking outside medical care and ignored interna"}</p>
-          <a href={url} className="btn btn-primary">
+          <a href={url} className="btn btn-dark" >
             Read more
           </a>
         </div>
