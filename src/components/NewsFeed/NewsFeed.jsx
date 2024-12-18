@@ -8,7 +8,7 @@ const NewsFeed = () => {
   const fetchNewsAPINew = async () => {
     try {
       const res = await axios.get(
-        `https://newsapi.org/v2/top-headlines?country=us&apiKey=9fa0825f28c04cbf8705a0793c1a8c0a`
+        `https://newsapi.org/v2/top-headlines?country=us&apiKey=${NEWS_API_KEY}`
       );
       setNews(res?.data?.articles || []);
       console.log(res?.data?.articles, "Alldataaaa");
