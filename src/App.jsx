@@ -1,15 +1,14 @@
-import './App.css'
+import Header from './components/Header/Header'
+import NewsFeed from "./components/NewsFeed/NewsFeed";
 
 function App() {
- 
 
   return (
-    <>
-      <div>
-        <>Project started20</>
-        </div>
-    </>
-  )
+    <div>
+      <Header/>
+      <NewsFeed/>
+    </div>
+  );
 }
 
 export default App
