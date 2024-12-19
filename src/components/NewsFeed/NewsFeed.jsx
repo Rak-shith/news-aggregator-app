@@ -6,9 +6,10 @@ const NewsFeed = () => {
   const [news, setNews] = useState([]);
 
   const fetchNewsAPINew = async () => {
+    // const NEWS_API_KEY = import.meta.env.NEWS_API_KEY;
     try {
       const res = await axios.get(
-        `https://newsapi.org/v2/top-headlines?country=us&apiKey=${NEWS_API_KEY}`
+        `https://newsapi.org/v2/top-headlines?country=us&apiKey=${import.meta.env.VITE_NEWS_API_KEY}`
       );
       setNews(res?.data?.articles || []);
       console.log(res?.data?.articles, "Alldataaaa");
