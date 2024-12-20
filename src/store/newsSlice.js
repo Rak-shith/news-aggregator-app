@@ -4,12 +4,17 @@ import axios from "axios";
 // Async Thunk for Fetching News
 export const fetchNews = createAsyncThunk(
   "news/fetchNews",
-  async (filters, { rejectWithValue }) => {
+  async (filters,  { rejectWithValue, getState }) => {
     if (!filters.q) {
       return [];
     }
+    const { news } = getState();
+    if (news.filters === filters && news.articles.length > 0) {
+      // Return cached data
+      return news.articles;
+    }
     try {
-      const { q, sortBy, from, to, country, category } = filters;
+      const { q, sortBy, from, country, category } = filters;
       const baseUrl = "https://newsapi.org/v2/everything";
       const apiKey = import.meta.env.VITE_NEWS_API_KEY;
       console.log("API URL:", apiKey);
@@ -20,27 +25,38 @@ export const fetchNews = createAsyncThunk(
         ...(country && { country }),
         ...(category && { category }),
         ...(from && { from }),
-        ...(to && { to }),
         apiKey,
       });
       console.log("API queryParams:", queryParams);
       const response = await axios.get(`${baseUrl}?${queryParams.toString()}`);
       // const response = {
-      //   "articles": [
+      //   articles: [
       //     {
-      //       "source": { "id": "techcrunch", "name": "TechCrunch" },
-      //       "author": "John Doe",
-      //       "title": "Tesla releases new model",
-      //       "description": "Tesla has launched a new electric vehicle model.",
-      //       "url": "https://techcrunch.com/tesla-new-model",
-      //       "urlToImage": "https://example.com/tesla-image.jpg",
-      //       "publishedAt": "2024-12-19T10:00:00Z",
-      //       "content": "Tesla has introduced a cutting-edge vehicle..."
-      //     }
-      //   ]
-      // }
+      //       source: { id: "techcrunch", name: "TechCrunch" },
+      //       author: "John Doe",
+      //       title: "Tesla releases new model",
+      //       description: "Tesla has launched a new electric vehicle model.",
+      //       url: "https://techcrunch.com/tesla-new-model",
+      //       urlToImage: "https://example.com/tesla-image.jpg",
+      //       publishedAt: "2024-12-19T10:00:00Z",
+      //       content: "Tesla has introduced a cutting-edge vehicle...",
+      //     },
+      //     {
+      //       source: { id: "bbc", name: "BBC" },
+      //       author: "Jane Doe",
+      //       title: "Tesla shares surge",
+      //       description: "Tesla's stock prices increased after new model launch.",
+      //       url: "https://bbc.com/tesla-shares",
+      //       urlToImage: "https://example.com/tesla-shares.jpg",
+      //       publishedAt: "2024-12-19T09:00:00Z",
+      //       content: "Tesla stock prices soared due to positive news...",
+      //     },
+      //   ],
+      // };
       console.log("API RESPONSE URL:", `${baseUrl}?${queryParams.toString()}`);
+      // console.log("API RESPONSE ALL:", response.articles);
       return response.data.articles;
+      // return response.articles;
     } catch (error) {
       return rejectWithValue(error.response.data || error.message);
     }
@@ -54,8 +70,7 @@ const newsSlice = createSlice({
     filters: {
       q: "tesla",
       sortBy: "popularity",
-      from: "",
-      to: "",
+      from: "2024-12-16",
       country: "",
       category: "",
     },

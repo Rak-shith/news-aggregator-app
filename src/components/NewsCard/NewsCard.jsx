@@ -13,7 +13,7 @@ const NewsCard = ({
   const [imageLoading, setImageLoading] = useState(true);
 
   const handleImageLoad = () => {
-    setImageLoading(false); // Stop showing loader when the image is fully loaded
+    setImageLoading(false);
   };
   return (
     <div>
@@ -37,7 +37,7 @@ const NewsCard = ({
               ? description.slice(0, 90)
               : "The firm discouraged injured workers from seeking outside medical care and ignored interna"}
           </p>
-          <Link to={`/news/${id}`} className="btn btn-dark">
+          <Link to={`/news/${encodeURIComponent(url)}`} className="btn btn-dark">
             Read more
           </Link>
         </div>
