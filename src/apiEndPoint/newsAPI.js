@@ -15,7 +15,7 @@ export const fetchNewsAPI = async () => {
 
 export const fetchGuardianAPI = async () => {
   const res = await axios.get(
-    `https://newsdata.io/api/1/latest?apikey=${import.meta.env.VITE_NEWS_DATA_API_KEY}&q=donald%20trump&region=washington-united%20states%20of%20america`
+    `http://api.mediastack.com/v1/news?access_key=${import.meta.env.VITE_NEWS_DATA_API_KEY}`
   );
   return res.data.response.results.map((article) => ({
     title: article.webTitle,

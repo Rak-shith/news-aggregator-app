@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Loader from "../Loader/Loader";
+import { Link } from "react-router-dom";
 
 const NewsCard = ({
+  id,
   title,
   image,
   description,
@@ -29,15 +31,15 @@ const NewsCard = ({
         />
         <div className="card-body">
           <h5 className="card-title">{title.slice(0, 50)}</h5>
-          <h6 className="card-title">Author: {author}</h6>
+          <h6 className="card-title">Author: {author || "Unknown"}</h6>
           <p className="card-text">
             {description
               ? description.slice(0, 90)
               : "The firm discouraged injured workers from seeking outside medical care and ignored interna"}
           </p>
-          <a href={url} className="btn btn-dark">
+          <Link to={`/news/${id}`} className="btn btn-dark">
             Read more
-          </a>
+          </Link>
         </div>
       </div>
     </div>

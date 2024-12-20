@@ -3,6 +3,8 @@ import NewsCard from "../NewsCard/NewsCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNews, setFilters } from "../../store/newsSlice";
 import Loader from "../Loader/Loader";
+import useDebounce from "../CustomHook/useDebounce";
+import FilterComp from "../FilterComp/FilterComp";
 
 const NewsFeed = () => {
   const dispatch = useDispatch();
@@ -10,70 +12,63 @@ const NewsFeed = () => {
   console.log(JSON.stringify(articles), "articlessss");
   console.log(JSON.stringify(filters), "filtersssss");
 
-  const [isInitialLoading, setIsInitialLoading] = useState(true); 
+  const [searchInput, setSearchInput] = useState(filters.q || ""); 
+  const [localFilters, setLocalFilters] = useState(filters);
+  const debouncedSearchInput = useDebounce(searchInput, 1000);
   
+  useEffect(() => {
+    if (debouncedSearchInput !== filters.q) {
+      dispatch(setFilters({ ...filters, q: debouncedSearchInput })); 
+      // dispatch(fetchNews({ ...filters, q: debouncedSearchInput }));
+    }
+  }, [debouncedSearchInput, dispatch, filters]);
+
   useEffect(() => {
     dispatch(fetchNews(filters));
   }, [filters, dispatch]);
 
-  useEffect(() => {
-    if (status !== "loading" && articles.length > 0) {
-      setIsInitialLoading(false);
-    }
-  }, [status, articles]);
-
   const handleFilterChange = (e) => {
+    e.preventDefault();
     const { name, value } = e.target;
-    dispatch(setFilters({ ...filters, [name]: value }));
+    setLocalFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleApplyFilters = () => {
+    dispatch(setFilters({ ...filters, ...localFilters }));
+    dispatch(fetchNews({ ...filters, ...localFilters }));
   };
 
   return (
-    <div className="container">
-      <h2 className="">News Feed</h2>
+    <div className="">
+      <FilterComp
+        searchInput={searchInput} 
+        handleFilterChange={handleFilterChange}
+        handleSearchInputChange={handleSearchInputChange}
+        handleApplyFilters={handleApplyFilters}
+        sortBy={localFilters.sortBy}
+        from={localFilters.from}
+        country={localFilters.country}
+        // to={localFilters.to}
+      />
 
-      {isInitialLoading && <Loader type="spinner" message="Loading page..." isLoading={isInitialLoading} size="lg" />}
+      <h2 className="text-center">News Feed</h2>
 
-      {!isInitialLoading && (
-        <div className="filters">
-          <input
-            type="text"
-            name="q"
-            placeholder="Keyword"
-            value={filters.q}
-            onChange={handleFilterChange}
-          />
-          <select name="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
-            <option value="popularity">Popularity</option>
-            <option value="relevancy">Relevancy</option>
-            <option value="publishedAt">Latest</option>
-          </select>
-          <input
-            type="date"
-            name="from"
-            value={filters.from}
-            onChange={handleFilterChange}
-          />
-          <input
-            type="date"
-            name="to"
-            value={filters.to}
-            onChange={handleFilterChange}
-          />
-        </div>
-      )}
-
-      {status === "loading" && !articles.length && !isInitialLoading && <Loader type="spinner" message="Loading articles..." isLoading={status === "loading"} size="lg" />}
-
+      {status === "loading" && <Loader />}
       {status === "failed" && <p>Error: {error}</p>}
 
       <div className="d-flex flex-wrap justify-content-center">
         {articles.length === 0 && !filters.q && <p>No search term entered. Please enter a keyword to search.</p>}
-        {articles
+        {status === "succeeded" && articles
         ?.filter((article) => article.urlToImage)
         ?.map((article, index) => {
           return (
             <NewsCard
               key={index}
+              id={article.source.id}
               title={article.title}
               description={article.description}
               image={article.urlToImage}
