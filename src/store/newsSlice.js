@@ -54,7 +54,6 @@ export const fetchNews = createAsyncThunk(
       //   ],
       // };
       console.log("API RESPONSE URL:", `${baseUrl}?${queryParams.toString()}`);
-      // console.log("API RESPONSE ALL:", response.articles);
       return response.data.articles;
       // return response.articles;
     } catch (error) {
