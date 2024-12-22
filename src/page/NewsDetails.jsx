@@ -5,11 +5,15 @@ const NewsDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const {articles, mediaStackArticles, nytArticles} = useSelector((state) => state.news);
-  
+  const { articles, mediaStackArticles, nytArticles } = useSelector(
+    (state) => state.news
+  );
+
   const allArticles = [...articles, ...mediaStackArticles, ...nytArticles];
 
-  const newsDetail = allArticles.find((article) => article.url === decodeURIComponent(id));
+  const newsDetail = allArticles.find(
+    (article) => article.url === decodeURIComponent(id)
+  );
 
   if (!newsDetail) {
     return (
@@ -38,7 +42,9 @@ const NewsDetails = () => {
           <p className="card-text">
             <strong>Author:</strong> {newsDetail?.author || "Unknown"}
           </p>
-          <p className="card-text">Published At: {newsDetail?.published_at || "2024-12-02"}</p>
+          <p className="card-text">
+            Published At: {newsDetail?.published_at || "2024-12-02"}
+          </p>
           <a
             href={newsDetail?.url}
             target="_blank"
@@ -47,10 +53,7 @@ const NewsDetails = () => {
           >
             Read Full Article
           </a>
-          <button
-            className="btn btn-outline-dark"
-            onClick={() => navigate(-1)}
-          >
+          <button className="btn btn-outline-dark" onClick={() => navigate(-1)}>
             Go Back
           </button>
         </div>

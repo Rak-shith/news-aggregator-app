@@ -1,9 +1,15 @@
-const FilterComp = ({ searchText, handleSearch, handleFilterChange, handleApplyFilters, sortBy, dateBy, source }) => {
+const FilterComp = ({
+  searchText,
+  handleSearch,
+  handleFilterChange,
+  handleApplyFilters,
+  sortBy,
+  dateBy,
+  source,
+}) => {
   return (
     <div className="filters p-3 bg-light rounded shadow-sm mb-4">
       <div className="row g-3 align-items-end">
-
-        {/* From Date */}
         <div className="col-md-4">
           <label htmlFor="dateBy" className="form-label">
             Date:
@@ -18,8 +24,7 @@ const FilterComp = ({ searchText, handleSearch, handleFilterChange, handleApplyF
           />
         </div>
 
-         {/* Sort By Dropdown */}
-         <div className="col-md-4">
+        <div className="col-md-4">
           <label htmlFor="sortBy" className="form-label">
             Category:
           </label>
@@ -57,7 +62,7 @@ const FilterComp = ({ searchText, handleSearch, handleFilterChange, handleApplyF
           </select>
         </div>
       </div>
-      {/* Search Input */}
+
       <div className="row justify-content-center text-center mt-3">
         <div className="col-md-4">
           <label htmlFor="keyword" className="form-label">

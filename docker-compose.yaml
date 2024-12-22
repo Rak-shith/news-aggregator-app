@@ -9,6 +9,12 @@ services:
       target: development
     ports:
       - 5173:5173
+    environment:
+      - VITE_NEWS_API_KEY=${VITE_NEWS_API_KEY}
+      - VITE_MEDIASTACK_API_KEY=${VITE_MEDIASTACK_API_KEY}
+      - VITE_NYT_API_KEY=${VITE_NYT_API_KEY}
+    env_file:
+      - .env
     volumes:
       - ./src:/app/src
     command: npm run dev -- --host
