@@ -5,9 +5,11 @@ const NewsDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const articles = useSelector((state) => state.news.articles);
+  const {articles, mediaStackArticles, nytArticles} = useSelector((state) => state.news);
   
-  const newsDetail = articles.find((article) => article.url === decodeURIComponent(id)); 
+  const allArticles = [...articles, ...mediaStackArticles, ...nytArticles];
+
+  const newsDetail = allArticles.find((article) => article.url === decodeURIComponent(id));
 
   if (!newsDetail) {
     return (
@@ -24,28 +26,29 @@ const NewsDetails = () => {
     <div className="container d-flex flex-column align-items-center justify-content-center my-5">
       <div className="card shadow-lg w-100" style={{ maxWidth: "800px" }}>
         <img
-          src={newsDetail.urlToImage}
+          src={newsDetail?.image}
           alt="news"
           className="card-img-top"
           style={{ height: "400px", objectFit: "cover" }}
         />
         <div className="card-body text-center">
-          <h1 className="card-title mb-4">{newsDetail.title}</h1>
-          <p className="card-text text-muted">{newsDetail.description}</p>
-          <p className="card-text">{newsDetail.content}</p>
+          <h1 className="card-title mb-4">{newsDetail?.title}</h1>
+          <p className="card-text text-muted">{newsDetail?.description}</p>
+          <p className="card-text">{newsDetail?.content}</p>
           <p className="card-text">
-            <strong>Author:</strong> {newsDetail.author || "Unknown"}
+            <strong>Author:</strong> {newsDetail?.author || "Unknown"}
           </p>
+          <p className="card-text">Published At: {newsDetail?.published_at || "2024-12-02"}</p>
           <a
-            href={newsDetail.url}
+            href={newsDetail?.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-primary me-2"
+            className="btn btn-dark me-2"
           >
             Read Full Article
           </a>
           <button
-            className="btn btn-secondary"
+            className="btn btn-outline-dark"
             onClick={() => navigate(-1)}
           >
             Go Back

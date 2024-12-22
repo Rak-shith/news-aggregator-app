@@ -1,12 +1,27 @@
-const FilterComp = ({ searchInput, handleSearchInputChange, handleFilterChange, handleApplyFilters, sortBy, from, country }) => {
+const FilterComp = ({ searchText, handleSearch, handleFilterChange, handleApplyFilters, sortBy, dateBy, source }) => {
   return (
     <div className="filters p-3 bg-light rounded shadow-sm mb-4">
       <div className="row g-3 align-items-end">
 
-        {/* Sort By Dropdown */}
-        <div className="col-md-3">
+        {/* From Date */}
+        <div className="col-md-4">
+          <label htmlFor="dateBy" className="form-label">
+            Date:
+          </label>
+          <input
+            type="date"
+            id="dateBy"
+            name="dateBy"
+            className="form-control"
+            value={dateBy}
+            onChange={handleFilterChange}
+          />
+        </div>
+
+         {/* Sort By Dropdown */}
+         <div className="col-md-4">
           <label htmlFor="sortBy" className="form-label">
-            Sort By:
+            Category:
           </label>
           <select
             id="sortBy"
@@ -15,50 +30,31 @@ const FilterComp = ({ searchInput, handleSearchInputChange, handleFilterChange, 
             value={sortBy}
             onChange={handleFilterChange}
           >
-            <option value="popularity">Popularity</option>
-            <option value="relevancy">Relevancy</option>
-            <option value="publishedAt">Latest</option>
+            <option value="general">General</option>
+            <option value="sports">Sports</option>
+            <option value="business">Business</option>
+            <option value="technology">Technology</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="health">Health</option>
+            <option value="science">Science</option>
           </select>
         </div>
 
-        {/* From Date */}
-        <div className="col-md-3">
-          <label htmlFor="fromDate" className="form-label">
-            From:
-          </label>
-          <input
-            type="date"
-            id="fromDate"
-            name="from"
-            className="form-control"
-            value={from}
-            onChange={handleFilterChange}
-          />
-        </div>
-
-        <div className="col-md-3">
-          <label htmlFor="country" className="form-label">
-            Country:
+        <div className="col-md-4">
+          <label htmlFor="source" className="form-label">
+            Source:
           </label>
           <select
-            id="country"
-            name="country"
+            id="source"
+            name="source"
             className="form-select"
-            value={country}
+            value={source}
             onChange={handleFilterChange}
           >
-            <option value="popularity">in</option>
-            <option value="relevancy">us</option>
+            <option value="NewsAPI">Top Headlines</option>
+            <option value="MediaStack">Open News</option>
+            <option value="NYT">New York Times</option>
           </select>
-        </div>
-
-        <div className="col-md-3">
-          <button
-            className="btn btn-dark"
-            onClick={handleApplyFilters}
-          >
-            Apply filter
-          </button>
         </div>
       </div>
       {/* Search Input */}
@@ -72,9 +68,9 @@ const FilterComp = ({ searchInput, handleSearchInputChange, handleFilterChange, 
             id="keyword"
             name="q"
             className="form-control"
-            placeholder="Enter keyword"
-            value={searchInput}
-            onChange={handleSearchInputChange}
+            placeholder="Search news..."
+            value={searchText}
+            onChange={handleSearch}
           />
         </div>
       </div>

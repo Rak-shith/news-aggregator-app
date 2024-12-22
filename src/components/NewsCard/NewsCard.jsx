@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Loader from "../Loader/Loader";
 import { Link } from "react-router-dom";
+import noImage from '../../assets/noImage.png'
 
 const NewsCard = ({
   id,
@@ -9,6 +10,7 @@ const NewsCard = ({
   description,
   url,
   author = "",
+  published_at,
 }) => {
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -21,26 +23,27 @@ const NewsCard = ({
         className="card mb-3 my-3 mx-3 px-2 py-2"
         style={{ maxWidth: "345px" }}
       >
+        <Link to={`/news/${encodeURIComponent(url)}`} className="btn">
         {imageLoading && <Loader type="spinner" size="sm" isLoading={true} />}
         <img
-          src={image}
+          src={image ? image : noImage}
           onLoad={handleImageLoad}
           className="card-img-top"
           alt="News Thumbnail"
           style={{ display: imageLoading ? "none" : "block" }}
         />
         <div className="card-body">
-          <h5 className="card-title">{title.slice(0, 50)}</h5>
+          <h5 className="card-title">{title?.slice(0, 50)}</h5>
           <h6 className="card-title">Author: {author || "Unknown"}</h6>
+          <h6 className="card-title">published_at: {published_at || "2024-12-02"}</h6>
           <p className="card-text">
             {description
-              ? description.slice(0, 90)
+              ? description?.slice(0, 90)
               : "The firm discouraged injured workers from seeking outside medical care and ignored interna"}
           </p>
-          <Link to={`/news/${encodeURIComponent(url)}`} className="btn btn-dark">
-            Read more
-          </Link>
+          <button type="button" className="btn btn-dark"> Read more</button>
         </div>
+        </Link>
       </div>
     </div>
   );
