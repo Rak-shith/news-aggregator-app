@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchNewsAPI } from "../service/newsAPI";
+import { fetchNewsAPI, fetchSourceAPI } from "../service/newsAPI";
 import { fetchMediaStackAPI } from "../service/newsCredAPI";
 import { fetchNYTAPI } from "../service/openNewsAPI";
 
@@ -15,12 +15,24 @@ export const fetchNews = createAsyncThunk(
   }
 );
 
+export const fetchSourceNews = createAsyncThunk(
+  "news/fetchSourceNews",
+  async ({ category }, { rejectWithValue }) => {
+    try {
+      const  categoryList = await fetchSourceAPI(category);
+      return categoryList;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchMediaStackNews = createAsyncThunk(
   "news/fetchMediaStackNews",
   async (searchText, { rejectWithValue }) => {
     try {
-      const articles = await fetchMediaStackAPI(searchText);
-      return articles;
+      const mediaStackArticles = await fetchMediaStackAPI(searchText);
+      return mediaStackArticles;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -31,8 +43,8 @@ export const fetchNYTNews = createAsyncThunk(
   "news/fetchNYTNews",
   async (searchText, { rejectWithValue }) => {
     try {
-      const articles = await fetchNYTAPI(searchText);
-      return articles;
+      const nytArticles = await fetchNYTAPI(searchText);
+      return nytArticles;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -43,6 +55,7 @@ const newsSlice = createSlice({
   name: "news",
   initialState: {
     articles: [],
+    categoryList: [],
     mediaStackArticles: [],
     nytArticles: [],
     filters: {
@@ -65,6 +78,18 @@ const newsSlice = createSlice({
         state.articles = action.payload;
       })
       .addCase(fetchNews.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      .addCase(fetchSourceNews.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchSourceNews.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.categoryList = action.payload;
+      })
+      .addCase(fetchSourceNews.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })

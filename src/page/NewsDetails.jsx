@@ -5,11 +5,11 @@ const NewsDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { articles, mediaStackArticles, nytArticles } = useSelector(
+  const { articles, categoryList, mediaStackArticles, nytArticles } = useSelector(
     (state) => state.news
   );
 
-  const allArticles = [...articles, ...mediaStackArticles, ...nytArticles];
+  const allArticles = [...articles, ...mediaStackArticles, ...nytArticles, ...categoryList];
 
   const newsDetail = allArticles.find(
     (article) => article.url === decodeURIComponent(id)
@@ -41,6 +41,9 @@ const NewsDetails = () => {
           <p className="card-text">{newsDetail?.content}</p>
           <p className="card-text">
             <strong>Author:</strong> {newsDetail?.author || "Unknown"}
+          </p>
+          <p className="card-text">
+            <strong>Category:</strong> {newsDetail?.category || "general"}
           </p>
           <p className="card-text">
             Published At: {newsDetail?.published_at || "2024-12-02"}
