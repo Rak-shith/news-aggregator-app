@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchNewsAPI } from "../apiPoint/newsAPI";
-import { fetchMediaStackAPI } from "../apiPoint/newsCredAPI";
-import { fetchNYTAPI } from "../apiPoint/openNewsAPI";
+import { fetchNewsAPI } from "../service/newsAPI";
+import { fetchMediaStackAPI } from "../service/newsCredAPI";
+import { fetchNYTAPI } from "../service/openNewsAPI";
 
 export const fetchNews = createAsyncThunk(
   "news/fetchNews",
