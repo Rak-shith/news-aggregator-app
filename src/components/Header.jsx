@@ -1,7 +1,10 @@
 const Header = () => {
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+      <nav
+        className="navbar navbar-expand-lg bg-body-tertiary"
+        data-bs-theme="dark"
+      >
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             News Aggregator App
@@ -30,7 +33,6 @@ const Header = () => {
                 </a>
               </li>
             </ul>
-            
           </div>
         </div>
       </nav>

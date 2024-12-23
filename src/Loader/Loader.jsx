@@ -1,8 +1,8 @@
 import React from "react";
-import "./Loader.css"; // Optional: Add your custom styles here
+import "./Loader.css"; 
 
 const Loader = ({ type = "spinner", message = "Loading...", isLoading = true, size = "lg" }) => {
-  if (!isLoading) return null; // If not loading, do not render the loader.
+  if (!isLoading) return null;
 
   if (type === "spinner") {
     return (
