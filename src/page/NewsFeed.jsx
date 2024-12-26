@@ -20,7 +20,7 @@ const NewsFeed = () => {
   const [isFiltering, setIsFiltering] = useState(false);
   const [filters, setFilters] = useState({
     sortBy: "general",
-    dateBy: "2024-12-22",
+    dateBy: "2024-12-25",
     source: "NewsAPI",
   });
 
