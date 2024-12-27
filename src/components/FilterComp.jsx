@@ -2,7 +2,6 @@ const FilterComp = ({
   searchText,
   handleSearch,
   handleFilterChange,
-  handleApplyFilters,
   sortBy,
   dateBy,
   source,
