@@ -16,7 +16,7 @@ export const fetchNewsAPI = async (searchText, date) => {
 
 export const fetchSourceAPI = async ( category ) => {
   try {
-    const response = await axios.get(`https://newsapi.org/v2/top-headlines/sources?category=${category}apiKey=API_KEY`, { 
+    const response = await axios.get(`https://newsapi.org/v2/top-headlines/sources?category=${category}`, { 
       params: { 
         apiKey: import.meta.env.VITE_NEWS_API_KEY 
       }
