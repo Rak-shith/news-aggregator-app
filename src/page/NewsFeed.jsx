@@ -75,8 +75,9 @@ const NewsFeed = () => {
           article.description?.toLowerCase().includes(debouncedSearchInput.toLowerCase())
         : true;
   
-      const matchesDate = dateBy
-        ? new Date(article.published_at).toISOString().split("T")[0] === dateBy
+        const matchesDate = dateBy
+        ? article.published_at && !isNaN(new Date(article.published_at)) &&
+          new Date(article.published_at).toISOString().split("T")[0] === dateBy
         : true;
   
       const matchesCategory =
