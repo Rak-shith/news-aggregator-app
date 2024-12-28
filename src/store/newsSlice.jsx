@@ -1,13 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchNewsAPI, fetchSourceAPI } from "../service/newsAPI";
+import { fetchNewsAPI } from "../service/newsAPI";
 import { fetchMediaStackAPI } from "../service/newsCredAPI";
 import { fetchNYTAPI } from "../service/openNewsAPI";
 
 export const fetchNews = createAsyncThunk(
   "news/fetchNews",
-  async (filters, { rejectWithValue }) => {
+  async (filters, {getState, rejectWithValue }) => {
     try {
       const { searchText, date, category, source } = filters;
+
+      const cacheKey = JSON.stringify(filters);
+
+      const { news } = getState();
+      if (news.cache[cacheKey]) {
+        return { filters, articles: news.cache[cacheKey] };
+      }
 
       let articles = [];
 
@@ -30,12 +37,8 @@ export const fetchNews = createAsyncThunk(
         articles = [...articles, ...nyTimesArticles];
       }
 
-      // if (category) {
-      //   const newAPIArticlesSource = await fetchSourceAPI(category);
-      //   articles = [...articles, ...newAPIArticlesSource];
-      // }
 
-      return articles
+      return { filters, articles };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -46,6 +49,7 @@ const newsSlice = createSlice({
   name: "news",
   initialState: {
     articles: [],
+    cache: {},
     filters: {
       searchText: "",
       date: "",
@@ -67,8 +71,12 @@ const newsSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchNews.fulfilled, (state, action) => {
+        const { filters, articles } = action.payload;
         state.status = "succeeded";
-        state.articles = action.payload;
+        state.articles = articles;
+
+        const cacheKey = JSON.stringify(filters);
+        state.cache[cacheKey] = articles;
       })
       .addCase(fetchNews.rejected, (state, action) => {
         state.status = "failed";
