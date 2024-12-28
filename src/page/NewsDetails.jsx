@@ -5,11 +5,11 @@ const NewsDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { articles, categoryList, mediaStackArticles, nytArticles } = useSelector(
+  const { articles } = useSelector(
     (state) => state.news
   );
 
-  const allArticles = [...articles, ...mediaStackArticles, ...nytArticles, ...categoryList];
+  const allArticles = [...articles];
 
   const newsDetail = allArticles.find(
     (article) => article.url === decodeURIComponent(id)
