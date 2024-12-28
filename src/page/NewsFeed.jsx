@@ -26,6 +26,7 @@ const NewsFeed = () => {
 
 
   useEffect(() => {
+    setIsFiltering(true);
     dispatch(
       fetchNews({
         searchText: debouncedSearchInput,
@@ -34,6 +35,9 @@ const NewsFeed = () => {
         source: filters.source,
       })
     );
+    setTimeout(() => {
+      setIsFiltering(false);
+    }, 500);
   }, [debouncedSearchInput, filters.dateBy, filters.sortBy, filters.source, dispatch]);
 
   const handleSearch = (e) => {
@@ -59,6 +63,7 @@ const NewsFeed = () => {
       ...prevFilters,
       sortBy: category,
     }));
+    setSearchText("")
   }
   
   const handleSourceChange = (source) => {
