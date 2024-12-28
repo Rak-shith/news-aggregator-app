@@ -11,31 +11,31 @@ export const fetchNews = createAsyncThunk(
 
       let articles = [];
 
-      if (source === "NewsAPI" || source === "all") {
-        const newAPIArticles = await fetchNewsAPI(searchText, date);
+      if (source === "NewsAPI" || source === "all") { 
+        const newAPIArticles = await fetchNewsAPI(searchText, date, category);
         articles = [...articles, ...newAPIArticles];
       }
 
-      // if (source === "MediaStack" || source === "all") {
-      //   const guardianArticles = await fetchMediaStackAPI(
-      //     searchText,
-      //     date,
-      //     category
-      //   );
-      //   articles = [...articles, ...guardianArticles];
-      // }
+      if (source === "MediaStack" || source === "all") {
+        const guardianArticles = await fetchMediaStackAPI(
+          searchText,
+          date,
+          category
+        );
+        articles = [...articles, ...guardianArticles];
+      }
 
       if (source === "NYT" || source === "all") {
         const nyTimesArticles = await fetchNYTAPI(searchText, date, category);
         articles = [...articles, ...nyTimesArticles];
       }
 
-      if (category) {
-        const newAPIArticlesSource = await fetchSourceAPI(category);
-        articles = [...articles, ...newAPIArticlesSource];
-      }
+      // if (category) {
+      //   const newAPIArticlesSource = await fetchSourceAPI(category);
+      //   articles = [...articles, ...newAPIArticlesSource];
+      // }
 
-      return articles.map((article) => ({ ...article }));
+      return articles
     } catch (error) {
       return rejectWithValue(error.message);
     }

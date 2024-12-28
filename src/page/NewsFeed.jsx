@@ -18,7 +18,7 @@ const NewsFeed = () => {
   const [isFiltering, setIsFiltering] = useState(false);
   const [filters, setFilters] = useState({
     sortBy: "general",
-    dateBy: "",
+    dateBy: "2024-12-25",
     source: "all",
   });
 

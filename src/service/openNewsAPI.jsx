@@ -11,7 +11,6 @@ export const fetchNYTAPI = async (searchText, date, category) => {
         category: category,
       }
     });
-    console.log(response.data.response.docs, "NYT");
     return response ? normalizeNewsData(response.data.response.docs, "NYT") : [];
   } catch (error) {
     throw new Error(error.message);
