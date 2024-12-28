@@ -5,46 +5,37 @@ import { fetchNYTAPI } from "../service/openNewsAPI";
 
 export const fetchNews = createAsyncThunk(
   "news/fetchNews",
-  async ({ searchText, date }, { rejectWithValue }) => {
+  async (filters, { rejectWithValue }) => {
     try {
-      const articles = await fetchNewsAPI(searchText, date);
-      return articles;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+      const { searchText, date, category, source } = filters;
 
-export const fetchSourceNews = createAsyncThunk(
-  "news/fetchSourceNews",
-  async ({ category }, { rejectWithValue }) => {
-    try {
-      const  categoryList = await fetchSourceAPI(category);
-      return categoryList;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+      let articles = [];
 
-export const fetchMediaStackNews = createAsyncThunk(
-  "news/fetchMediaStackNews",
-  async (searchText, { rejectWithValue }) => {
-    try {
-      const mediaStackArticles = await fetchMediaStackAPI(searchText);
-      return mediaStackArticles;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+      if (source === "NewsAPI" || source === "all") {
+        const newAPIArticles = await fetchNewsAPI(searchText, date);
+        articles = [...articles, ...newAPIArticles];
+      }
 
-export const fetchNYTNews = createAsyncThunk(
-  "news/fetchNYTNews",
-  async (searchText, { rejectWithValue }) => {
-    try {
-      const nytArticles = await fetchNYTAPI(searchText);
-      return nytArticles;
+      // if (source === "MediaStack" || source === "all") {
+      //   const guardianArticles = await fetchMediaStackAPI(
+      //     searchText,
+      //     date,
+      //     category
+      //   );
+      //   articles = [...articles, ...guardianArticles];
+      // }
+
+      if (source === "NYT" || source === "all") {
+        const nyTimesArticles = await fetchNYTAPI(searchText, date, category);
+        articles = [...articles, ...nyTimesArticles];
+      }
+
+      if (category) {
+        const newAPIArticlesSource = await fetchSourceAPI(category);
+        articles = [...articles, ...newAPIArticlesSource];
+      }
+
+      return articles.map((article) => ({ ...article }));
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -55,19 +46,21 @@ const newsSlice = createSlice({
   name: "news",
   initialState: {
     articles: [],
-    categoryList: [],
-    mediaStackArticles: [],
-    nytArticles: [],
     filters: {
-      q: "tesla",
-      sortBy: "popularity",
-      from: "2024-12-16",
-      country: "",
+      searchText: "",
+      date: "",
+      category: "general",
+      source: "all",
     },
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setAllFilters(state, action) {
+      const { field, value } = action.payload;
+      state.filters[field] = value;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNews.pending, (state) => {
@@ -80,45 +73,9 @@ const newsSlice = createSlice({
       .addCase(fetchNews.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-      })
-
-      .addCase(fetchSourceNews.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchSourceNews.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.categoryList = action.payload;
-      })
-      .addCase(fetchSourceNews.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-
-      .addCase(fetchMediaStackNews.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchMediaStackNews.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.mediaStackArticles = action.payload;
-      })
-      .addCase(fetchMediaStackNews.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      })
-
-      .addCase(fetchNYTNews.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchNYTNews.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.nytArticles = action.payload;
-      })
-      .addCase(fetchNYTNews.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
       });
   },
 });
 
-export const { setFilters } = newsSlice.actions;
+export const { setAllFilters } = newsSlice.actions;
 export default newsSlice.reducer;

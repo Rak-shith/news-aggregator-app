@@ -2,6 +2,8 @@ const FilterComp = ({
   searchText,
   handleSearch,
   handleFilterChange,
+  handleCategoryChange,
+  handleSourceChange,
   sortBy,
   dateBy,
   source,
@@ -32,7 +34,7 @@ const FilterComp = ({
             name="sortBy"
             className="form-select"
             value={sortBy}
-            onChange={handleFilterChange}
+            onChange={(e) => handleCategoryChange(e.target.value)}
           >
             <option value="general">General</option>
             <option value="sports">Sports</option>
@@ -53,11 +55,12 @@ const FilterComp = ({
             name="source"
             className="form-select"
             value={source}
-            onChange={handleFilterChange}
+            onChange={(e) => handleSourceChange(e.target.value)}
           >
-            <option value="NewsAPI">Top Headlines</option>
-            <option value="MediaStack">Open News</option>
-            <option value="NYT">New York Times</option>
+            <option value="all">All Data Sources</option>
+            <option value="NewsAPI">News API</option>
+            <option value="MediaStack">The Guardian API</option>
+            <option value="NYT">New Yourk Times API</option>
           </select>
         </div>
       </div>

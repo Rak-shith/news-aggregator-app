@@ -11,7 +11,6 @@ const NewsCard = ({
   url,
   author = "",
   published_at,
-  category,
 }) => {
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -36,7 +35,6 @@ const NewsCard = ({
           <div className="card-body">
             <h5 className="card-title">{title?.slice(0, 50)}</h5>
             <h6 className="card-title">Author: {author || "Unknown"}</h6>
-            <h6 className="card-title">Category: {category || "general"}</h6>
             <h6 className="card-title">
               Published At: {published_at || "2024-12-02"}
             </h6>

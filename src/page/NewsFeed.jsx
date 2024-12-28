@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect,  useState } from "react";
 import NewsCard from "../components/NewsCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchNews,
-  fetchMediaStackNews,
-  fetchNYTNews,
-  fetchSourceNews,
+  setAllFilters
 } from "../store/newsSlice";
 import Loader from "../Loader/Loader";
 import useDebounce from "../CustomHook/useDebounce";
@@ -13,32 +11,30 @@ import FilterComp from "../components/FilterComp";
 
 const NewsFeed = () => {
   const dispatch = useDispatch();
-  const { articles, categoryList, mediaStackArticles, nytArticles, status, error } =
+  const { articles,  status, error } =
     useSelector((state) => state.news);
 
-  const [searchText, setSearchText] = useState("tesla");
+  const [searchText, setSearchText] = useState("");
   const [isFiltering, setIsFiltering] = useState(false);
   const [filters, setFilters] = useState({
     sortBy: "general",
-    dateBy: "2024-12-25",
-    source: "NewsAPI",
+    dateBy: "",
+    source: "all",
   });
 
   const debouncedSearchInput = useDebounce(searchText, 1000);
 
+
   useEffect(() => {
-    if (debouncedSearchInput) {
-      const fetchAllNews = async () => {
-        await Promise.all([
-          dispatch(fetchNews({ searchText: debouncedSearchInput, date: filters.dateBy })),
-          dispatch(fetchMediaStackNews(debouncedSearchInput)),
-          dispatch(fetchNYTNews(debouncedSearchInput)),
-          dispatch(fetchSourceNews({category: filters.sortBy})),
-        ]);
-      };
-      fetchAllNews();
-    }
-  }, [debouncedSearchInput, filters.dateBy, filters.sortBy, dispatch]);
+    dispatch(
+      fetchNews({
+        searchText: debouncedSearchInput,
+        date: filters.dateBy,
+        category: filters.sortBy,
+        source: filters.source,
+      })
+    );
+  }, [debouncedSearchInput, filters.dateBy, filters.sortBy, filters.source, dispatch]);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -51,45 +47,27 @@ const NewsFeed = () => {
       ...prevFilters,
       [name]: value,
     }));
+    dispatch(setAllFilters({ field: name, value }));
     setTimeout(() => {
       setIsFiltering(false);
     }, 500);
   };
 
-  const allArticles = useMemo(
-    () => [
-      ...articles.map((item) => ({ ...item, source: "NewsAPI" })),
-      ...mediaStackArticles.map((item) => ({ ...item, source: "MediaStack" })),
-      ...nytArticles.map((item) => ({ ...item, source: "NYT" })),
-      ...categoryList.map((item) => ({ ...item })),
-    ],
-    [articles, mediaStackArticles, nytArticles, categoryList]
-  );
-
-  const filteredArticles = useMemo(() => {
-    const { dateBy, sortBy, source } = filters;
+  const handleCategoryChange = (category) => {
+    dispatch(setAllFilters({ field: "category", value: category }));
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      sortBy: category,
+    }));
+  }
   
-    return allArticles.filter((article) => {
-      const matchesSearch = debouncedSearchInput
-        ? article.title?.toLowerCase().includes(debouncedSearchInput.toLowerCase()) ||
-          article.description?.toLowerCase().includes(debouncedSearchInput.toLowerCase())
-        : true;
-  
-        const matchesDate = dateBy
-        ? article.published_at && !isNaN(new Date(article.published_at)) &&
-          new Date(article.published_at).toISOString().split("T")[0] === dateBy
-        : true;
-  
-      const matchesCategory =
-        sortBy === "general" || article.category?.toLowerCase() === sortBy.toLowerCase();
-  
-      const matchesSource =
-        source === "NewsAPI" || article.source?.toLowerCase() === source.toLowerCase();
-  
-      return matchesSearch && matchesDate && matchesCategory && matchesSource;
-    });
-  }, [allArticles, filters, debouncedSearchInput]);
-  
+  const handleSourceChange = (source) => {
+    dispatch(setAllFilters({ field: "source", value: source }));
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      source,
+    }));
+  }
 
   return (
     <div className="">
@@ -97,6 +75,8 @@ const NewsFeed = () => {
         searchText={searchText}
         handleSearch={handleSearch}
         handleFilterChange={handleFilterChange}
+        handleCategoryChange={handleCategoryChange}
+        handleSourceChange={handleSourceChange}
         sortBy={filters.category}
         dateBy={filters.dateBy}
         source={filters.source}
@@ -108,8 +88,8 @@ const NewsFeed = () => {
       {status === "failed" && <p>Error: {error}</p>}
 
       <div className="d-flex flex-wrap justify-content-center">
-        {filteredArticles.length > 0 ? (
-          filteredArticles.map((article, index) => (
+        {articles.length > 0 ? (
+          articles.map((article, index) => (
             <NewsCard key={index} {...article} />
           ))
         ) : (
